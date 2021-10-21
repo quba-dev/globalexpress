@@ -1,0 +1,14 @@
+.venv
+.idea
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/globalexpress.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.env
+.DS_Store
+.__pycache__
+.__pycache__/__init__.cpyth
+*.py[cod]
+/media/
+media/

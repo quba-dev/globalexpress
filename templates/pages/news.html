@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title_page %}{% endblock %}
+
+{% block style-libs %}{% endblock %}
+
+{% block style %}{% endblock %}
+
+{% block content %}
+
+    <div class="gray__body">
+        <div class="container">
+            <div class="faq__wrap">
+                <div class="shop__wrap">
+                    <div class="shop__head">
+                        <h2 class="shop__title">
+                            Новости и Акции
+                        </h2>
+                        <div class="shop__filter">
+                            <a href="{% url 'news' %}" class="filter__item active">Все</a>
+                            {% for category in categories %}
+                                    <a href="{% url 'news' %}?category={{ category.slug }}" class="filter__item active">
+                                {{ category.name }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="shop__grid allposts">
+                        {% for post in posts %}
+
+                            {% if forloop.last %}
+                            <div class="grid__item posts last-post" data-postid="{{ post.id }}">
+                                {% else %}
+                                    <div class="grid__item ">
+                                {% endif %}
+                                <div class="shop__img">
+                                    <a href="{{ post.slug }}"><img src="{{ post.image.url }}" alt=""></a>
+                                </div>
+                                <div class="grid__item-info news__item-info ">
+                                    <div class="grid__item-date">
+                                        {{ post.published }}
+                                    </div>
+                                    <p class="news__item-text">
+                                        {{ post.title }}
+                                    </p>
+                                </div>
+
+                            </div>
+                            {% endfor %}
+
+                    </div>
+                    {% if posts.count >= 3 %}
+                    <div class="shop__more-wrap load-more" id="load-more">
+                        <button class="shop__more" style="border: none">
+                            Больше новостей!
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+
+    <script>
+        ///Ajax-News
+    $('#load-more').on('click', async function(){
+        let lastPostId = $('.last-post').attr('data-postid')
+        let data = {
+            lastPostId: lastPostId
+        };
+
+        $('.posts').removeClass('last-post')
+        $('.posts').removeAttr('data-postid')
+
+        await $.ajax({
+            method: "GET",
+            dataType: "json",
+            data: data,
+            url: '{% url "load-more-posts" %}',
+            success: function (data){
+                let result = data['data']
+                if(!result){
+                    $('.load-more').css('display', 'none')
+                } else {
+                    $.each(result, function (key, obj){
+                        if(obj['last_post']){
+                            $('.allposts').append(
+                                '<div class="grid__item posts last-post" data-postid="' + obj['id'] + '">' +
+                                '<div class="shop__img">' +
+                                       ' <a href="' + obj['slug'] + '"><img src="' + 'http://127.0.0.1:8000/media/'+ obj['image'] + '" alt=""></a>' +
+                                    '</div>' +
+                                    '<div class="grid__item-info news__item-info ">' +
+                                        '<div class="grid__item-date">' +
+                                             obj['published'] +
+                                        '</div>' +
+                                        '<p class="news__item-text">' +
+                                             obj['title'] +
+                                        '</p>' +
+                                    '</div>'+
+                                '</div>'
+                            )
+                        }else{
+                            $('.allposts').append(
+                                `
+                                    <div class="grid__item posts" >
+                                <div class="shop__img">
+                                       <a href="${obj['slug']}"> <img src="http://127.0.0.1:8000/media/${obj['image']}" alt=""></a>
+                                    </div>
+                                    <div class="grid__item-info news__item-info ">
+                                        <div class="grid__item-date">
+                                             ${obj['published']}
+                                        </div>
+                                        <p class="news__item-text">
+                                             ${obj['title']}
+                                        </p>
+                                    </div>
+                                </div>
+                                `
+                            )
+                        }
+                    })
+                }
+            }
+        })
+    })
+    </script>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title_page %}
+    sign
+{% endblock %}
+
+{% block page %}sign-page{% endblock %}
+
+{% block body-class %}sign-body{% endblock %}
+
+{% block style-libs %}{% endblock %}
+
+{% block style %}{% endblock %}
+
+{% block content %}
+
+    <div class="sign sign__flex">
+        <div class="sign__wrap">
+            <div class="sign__inner">
+                <div class="sign__head">
+                    <div class="sign__logo">
+                        <img src="{% static 'img/png/logo.png' %}" alt="">
+                    </div>
+                </div>
+                <h2 class="sign__title">
+                    Войти
+                </h2>
+                <form action="{% url 'login' %}" method="POST">
+                    {% csrf_token %}
+
+                    <div class="fields">
+
+{#                        Если E-mail неправильный, добавить класс "error" на fields#}
+{#                        и раскомментировать email__error#}
+                        <label for="sign-email" class="sign__label">
+                            Ваш электронный адрес
+                        </label>
+                        {{ form.email }}
+
+                       {#<p class="email__error">#}
+                         {# Email не найден попробуйте снова#}
+                        {#</p>#}
+
+                    </div>
+                    <div class="fields">
+
+                        <label for="sign-password" class="sign__label">
+                            Ваш пароль
+                        </label>
+                        <div class="sign__input-wrap">
+                            {{ form.password }}
+                            <div class="sign__eye"></div>
+                        </div>
+                        <div class="forget__password" data-micromodal-trigger="forget-password">
+                            Забыли пароль?
+                        </div>
+                    </div>
+                    <button type="submit" name="login" class="sign__btn">
+                        Войти
+                    </button>
+                </form>
+                <p class="sign__link">
+                    Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a>
+                </p>
+            </div>
+        </div>
+        <div class="sign__img">
+            <img src="{% static 'img/png/delivery.png' %}" alt="">
+        </div>
+    </div>
+
+                    {#    модалка забыли пароль  #}
+    <div class="modal micromodal-slide" id="forget-password" aria-hidden="true">
+        <div class="modal__overlay sign__modal-overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true">
+                <div class="area__modal">
+                    <div class="modal__close" data-micromodal-close></div>
+                    <h2 class="modal__title">
+                        Введите ваш используемый
+                        Email
+                    </h2>
+                    <p class="modal__subtitle">
+                        На ваш email будет отправлено письмо
+                        с ссылкой для смены пароля
+                    </p>
+                    <form action="{% url 'forget_email' %}" method="POST">
+                        <div class="fields ">
+                            <label for="sign-email" class="sign__label">
+                                Текущий Email
+                            </label>
+                            {% csrf_token %}
+                            {{ email_form.email }}
+                        </div>
+                        <button type="submit" name="email" class="personal__btn modal__btn">
+                            Отправить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal micromodal-slide" id="aforget-password" aria-hidden="true">
+        <div class="modal__overlay sign__modal-overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container verify-modal"  role="dialog" aria-modal="true">
+                <div class="area__modal" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <div class="modal__close" data-micromodal-close></div>
+                    <img src="{% static 'img/png/verify-email.png' %}" alt="Verify Email">
+                    <h2 class="modal__title">
+                        На ваш E-mail почту оправлена ссылка
+                    </h2>
+                    <div class="modal__subtitle">
+                        Если не обнаружили письма,
+                        то проверьте папку "Спам"
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
